@@ -12,7 +12,7 @@ function App() {
 		axios.get('/messages/sync').then((response) => {
 			setMessages(response.data);
 		});
-	});
+	}, []);
 
 	useEffect(() => {
 		const pusher = new Pusher('c72a197dd424cf0f8be3', {
@@ -20,9 +20,8 @@ function App() {
 		});
 
 		const channel = pusher.subscribe('messages');
-		channel.bind('inserted', (newMessage) => {
-			alert(JSON.stringify(newMessage));
-			setMessages([...messages, newMessage]);
+		channel.bind('inserted', (data) => {
+			setMessages([...messages, data]);
 		});
 
 		return () => {
@@ -37,7 +36,7 @@ function App() {
 		<div className='app'>
 			<div className='app_body'>
 				<Sidebar />
-				<Chat />
+				<Chat messages={messages} />
 			</div>
 		</div>
 	);
